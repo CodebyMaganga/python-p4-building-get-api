@@ -19,5 +19,36 @@ db.init_app(app)
 def index():
     return "Index for Game/Review/User API"
 
+@app.route('/games')
+def games():
+    all_games = []
+
+    for game in Game.query.all():
+        new_game={
+            'title': game.title,
+            'genre': game.genre,
+            'platform': game.platform,
+            "price": game.price
+        }
+        all_games.append(new_game)
+    
+    response = make_response(jsonify(all_games),200)
+
+    response.headers["Content-Type"] = "application/json"
+
+    return response
+
+@app.route('/games/<int:id>')
+def get_game():
+    game = Game.query.filter_by(id == id).first()
+
+    result = game.to_dict()
+
+    response = make_response(jsonify(result), 200)
+
+    response.headers["Content-Type"] = 'application/json'
+
+    return response
+
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
